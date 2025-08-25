@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="True North - VIP 77 Campaign: Support our mission to transform communities through compassionate action">
+    <meta name="keywords" content="donation, charity, humanitarian, True North, NextLevel">
+    <title>True North - VIP 77 Campaign</title>
+    <link rel="stylesheet" href="./styles/main.css">
+    <style>
+        /* Inline font fallback for offline use */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    </style>
+</head>
+<body>
+    <!-- Background Image Container -->
+    <div id="background-container" class="background-container">
+        <!-- Background images will be dynamically loaded here -->
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="container">
+                <div class="logos-container">
+                    <img src="./images/p4h-logo.png" alt="P4H Global Logo" class="header-logo p4h-logo">
+                    <img src="./images/truenorth.jpg" alt="True North Logo" class="header-logo truenorth-logo">
+                </div>
+                <h1 class="campaign-title">True North - VIP 77</h1>
+                <p class="campaign-tagline">Transforming Communities Through Compassionate Action</p>
+                <p class="campaign-subtitle">Supporting P4H Global's Mission in Haiti</p>
+            </div>
+        </header>
+
+        <!-- Hero Section with Donation Widget -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <h2 class="hero-title">Join Our Mission</h2>
+                    <p class="hero-description">
+                        Your support enables us to reach those who need it most. 
+                        Every contribution makes a meaningful difference in building stronger, 
+                        more resilient communities.
+                    </p>
+                    
+                    <!-- Donation Widget -->
+                    <div class="donation-widget" id="donation-widget">
+                        <div class="donation-amount">
+                            <button class="amount-btn decrease" id="decrease-btn" aria-label="Decrease amount">−</button>
+                            <div class="amount-display">
+                                <span class="currency">$</span>
+                                <input type="number" id="amount-input" value="200" min="50" step="50" class="amount-input">
+                            </div>
+                            <button class="amount-btn increase" id="increase-btn" aria-label="Increase amount">+</button>
+                        </div>
+                        <button class="donate-btn" id="donate-btn">
+                            Donate Now
+                        </button>
+                        <p class="donation-note">Monthly recurring donation</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Video Carousel Section -->
+        <section class="video-section">
+            <div class="container">
+                <h2 class="section-title">Testimonials</h2>
+                <div class="video-carousel" id="video-carousel">
+                    <button class="carousel-btn prev" id="prev-btn" aria-label="Previous video">‹</button>
+                    <div class="video-container">
+                        <div class="video-wrapper" id="video-wrapper">
+                            <!-- Videos will be dynamically loaded here -->
+                        </div>
+                    </div>
+                    <button class="carousel-btn next" id="next-btn" aria-label="Next video">›</button>
+                </div>
+                <div class="video-indicators" id="video-indicators">
+                    <!-- Indicators will be dynamically created -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Mission Statement Section -->
+        <section class="mission-section">
+            <div class="container">
+                <div class="mission-content">
+                    <h2 class="section-title">Our Mission</h2>
+                    <p class="mission-text">
+                        True North - VIP 77 represents our commitment to providing 
+                        humanitarian aid where it's needed most. Through strategic partnerships 
+                        and community-focused initiatives, we work tirelessly to create 
+                        lasting positive change.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-text">&copy; 2024 P4H Global. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <!-- Simple initialization for static files -->
+    <script src="./js/donation-widget-simple.js"></script>
+    <script src="./js/simple-init.js"></script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+# =========================
+# Project-specific ignores
+# =========================
+
+# Hive mind and AI-related files
+hive-mind/
+*hive*
+*swarm*
+.swarm/
+.claude-flow/
+
+# Claude and AI assistant files
+claude/
+CLAUDE.md
+.claude/
+*.claude
+*claude-flow*
+
+# Prompt files
+prompt
+prompt.txt
+prompt.md
+*.prompt
+prompts/
+
+# =========================
+# Development and test files
+# =========================
+
+# Test server and test files
+test-server.py
+test-*.html
+test-*.js
+*.pyc
+__pycache__/
+
+# Update scripts (keep update-videos.js as it's useful)
+# update-videos.js is NOT ignored - it's a useful utility
+
+# =========================
+# OS and system files
+# =========================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# =========================
+# Node.js and npm
+# =========================
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Yarn
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# =========================
+# Editor and IDE files
+# =========================
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+.history/
+*.vsix
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*.swn
+*.vim
+.netrwhist
+tags
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# =========================
+# Build and compiled files
+# =========================
+
+# Compiled output
+dist/
+build/
+*.min.js
+*.min.css
+
+# Logs
+logs/
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# =========================
+# Testing
+# =========================
+
+# Coverage directory
+coverage/
+*.lcov
+.nyc_output
+
+# Test reports
+test-results/
+tests/reports/
+tests/fixtures/
+
+# =========================
+# Environment and config
+# =========================
+
+# Environment variables
+.env
+.env.test
+.env.production
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# =========================
+# Temporary files
+# =========================
+
+# Temp directories
+tmp/
+temp/
+.tmp/
+.temp/
+
+# Cache
+.cache/
+.parcel-cache/
+.nuxt/
+.next/
+.docusaurus/
+
+# Session
+session_data.json
+*.session
+
+# Backups
+*.backup
+*.bak
+*.orig
+*.old
+backup/
+
+# =========================
+# Media files (optional)
+# =========================
+
+# Uncomment if you want to exclude videos
+# *.mp4
+# *.webm
+# *.ogv
+# *.mov
+
+# Uncomment if you want to exclude generated thumbnails
+# *_thumb.jpg
+# *_thumb.png
+
+# =========================
+# Documentation (keep README.md)
+# =========================
+
+# Keep project documentation
+# README.md is NOT ignored
+# But ignore other development docs
+TODO.md
+NOTES.md
+notes/
+drafts/
+
+# =========================
+# Keep these important files
+# =========================
+# !README.md
+# !package.json
+# !update-videos.js
+# !src/**
+# !docs/**
+# !tests/**

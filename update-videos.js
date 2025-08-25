@@ -1,0 +1,243 @@
+#!/usr/bin/env node
+
+/**
+ * Video Configuration Update Script
+ * Scans the videos directory and updates main.js with video information
+ * Generates thumbnails using ffmpeg if available
+ */
+
+const fs = require('fs');
+const path = require('path');
+const { exec } = require('child_process');
+const util = require('util');
+const execPromise = util.promisify(exec);
+
+const VIDEOS_DIR = path.join(__dirname, 'src', 'videos');
+const IMAGES_DIR = path.join(__dirname, 'src', 'images');
+const MAIN_JS_PATH = path.join(__dirname, 'src', 'js', 'main.js');
+
+// Check if ffmpeg is available
+async function checkFFmpeg() {
+    try {
+        await execPromise('ffmpeg -version');
+        return true;
+    } catch (error) {
+        console.log('⚠️  ffmpeg not found. Thumbnails will use fallback images.');
+        return false;
+    }
+}
+
+// Generate thumbnail from video using ffmpeg
+async function generateThumbnail(videoPath, outputPath) {
+    try {
+        // Extract frame at 1 second mark
+        const command = `ffmpeg -i "${videoPath}" -ss 00:00:01.000 -vframes 1 -q:v 2 "${outputPath}" -y`;
+        await execPromise(command);
+        console.log(`  ✅ Generated thumbnail: ${path.basename(outputPath)}`);
+        return true;
+    } catch (error) {
+        console.log(`  ⚠️  Could not generate thumbnail for ${path.basename(videoPath)}`);
+        return false;
+    }
+}
+
+// Get list of video files
+function getVideoFiles() {
+    if (!fs.existsSync(VIDEOS_DIR)) {
+        console.log('⚠️  Videos directory not found. Creating it...');
+        fs.mkdirSync(VIDEOS_DIR, { recursive: true });
+        return [];
+    }
+
+    const files = fs.readdirSync(VIDEOS_DIR);
+    return files.filter(file => {
+        const ext = path.extname(file).toLowerCase();
+        return ['.mp4', '.webm', '.ogv', '.mov'].includes(ext);
+    });
+}
+
+// Get list of existing background images for fallback
+function getFallbackImages() {
+    const images = [];
+    if (fs.existsSync(IMAGES_DIR)) {
+        const files = fs.readdirSync(IMAGES_DIR);
+        const bgImages = files.filter(file => file.startsWith('bg') && file.endsWith('.jpg'));
+        bgImages.forEach(img => {
+            images.push(`./images/${img}`);
+        });
+    }
+    return images;
+}
+
+// Generate title from filename
+function generateTitle(filename) {
+    // Remove extension
+    let title = path.basename(filename, path.extname(filename));
+    
+    // Replace underscores and hyphens with spaces
+    title = title.replace(/[_-]/g, ' ');
+    
+    // Capitalize each word
+    title = title.replace(/\b\w/g, char => char.toUpperCase());
+    
+    return title;
+}
+
+// Generate description based on title
+function generateDescription(title) {
+    const descriptions = {
+        'Liam Helmer': 'VIP 77 Student testimonial supporting P4H Global\'s educational mission in Haiti.',
+        'Community Outreach': 'Witness the transformative power of community-focused initiatives in Haiti.',
+        'Educational Impact': 'See how access to quality education changes lives in Haiti.',
+        'Healthcare Support': 'Critical healthcare services reaching remote communities in Haiti.',
+        'Student Testimonial': 'Hear directly from students whose lives have been transformed.',
+        'Teacher Training': 'Empowering educators with the tools and knowledge to inspire change.',
+        'School Program': 'Inside look at our comprehensive educational programs.',
+        'Emergency Relief': 'Rapid response efforts providing critical aid when disasters strike.'
+    };
+
+    // Check if we have a specific description
+    for (const [key, desc] of Object.entries(descriptions)) {
+        if (title.toLowerCase().includes(key.toLowerCase())) {
+            return desc;
+        }
+    }
+
+    // Generate generic description
+    if (title.toLowerCase().includes('student')) {
+        return `${title} - A VIP 77 student sharing their experience and support for P4H Global.`;
+    } else if (title.toLowerCase().includes('vip')) {
+        return `${title} - Supporting P4H Global's mission to transform education in Haiti.`;
+    } else {
+        return `${title} - Part of the True North VIP 77 campaign for P4H Global.`;
+    }
+}
+
+// Update main.js file
+async function updateMainJS(videoConfigs) {
+    try {
+        // Read the current main.js content
+        let content = fs.readFileSync(MAIN_JS_PATH, 'utf8');
+        
+        // Create the new video configuration
+        const videoConfigStr = JSON.stringify(videoConfigs, null, 12)
+            .replace(/^\s{8}/gm, '            ') // Fix indentation
+            .replace(/^\s{12}/gm, '                '); // Fix nested indentation
+        
+        // Find and replace the loadVideos function
+        const loadVideosRegex = /loadVideos\(\)\s*{\s*[\s\S]*?this\.config\.videos\s*=\s*\[[\s\S]*?\];/;
+        
+        const newLoadVideos = `loadVideos() {
+        // Define videos from the videos directory
+        // Auto-generated by update-videos.js
+        this.config.videos = ${videoConfigStr};`;
+        
+        if (loadVideosRegex.test(content)) {
+            content = content.replace(loadVideosRegex, newLoadVideos);
+            console.log('✅ Updated loadVideos() function in main.js');
+        } else {
+            console.log('⚠️  Could not find loadVideos() function. Please update manually.');
+            console.log('\nAdd this to your loadVideos() function:');
+            console.log('this.config.videos = ' + videoConfigStr + ';');
+        }
+        
+        // Write the updated content back
+        fs.writeFileSync(MAIN_JS_PATH, content, 'utf8');
+        
+    } catch (error) {
+        console.error('❌ Error updating main.js:', error.message);
+    }
+}
+
+// Main function
+async function main() {
+    console.log('🎬 Video Configuration Update Script');
+    console.log('=====================================\n');
+    
+    // Check for ffmpeg
+    const hasFFmpeg = await checkFFmpeg();
+    
+    // Get video files
+    const videoFiles = getVideoFiles();
+    
+    if (videoFiles.length === 0) {
+        console.log('📁 No video files found in src/videos/');
+        console.log('   Place your .mp4 files there and run this script again.\n');
+        
+        // Still update with empty array to remove placeholders
+        await updateMainJS([]);
+        console.log('✅ Removed placeholder videos from configuration.');
+        return;
+    }
+    
+    console.log(`📹 Found ${videoFiles.length} video file(s):\n`);
+    
+    // Get fallback images
+    const fallbackImages = getFallbackImages();
+    
+    // Process each video
+    const videoConfigs = [];
+    
+    for (let i = 0; i < videoFiles.length; i++) {
+        const videoFile = videoFiles[i];
+        console.log(`Processing: ${videoFile}`);
+        
+        const videoPath = path.join(VIDEOS_DIR, videoFile);
+        const title = generateTitle(videoFile);
+        const description = generateDescription(title);
+        
+        // Generate thumbnail filename
+        const thumbnailName = path.basename(videoFile, path.extname(videoFile)) + '_thumb.jpg';
+        const thumbnailPath = path.join(IMAGES_DIR, thumbnailName);
+        const thumbnailUrl = `./images/${thumbnailName}`;
+        
+        let poster = thumbnailUrl;
+        
+        // Try to generate thumbnail
+        if (hasFFmpeg) {
+            const thumbnailGenerated = await generateThumbnail(videoPath, thumbnailPath);
+            if (!thumbnailGenerated && fallbackImages.length > 0) {
+                // Use fallback image
+                poster = fallbackImages[i % fallbackImages.length];
+                console.log(`  ℹ️  Using fallback image: ${poster}`);
+            }
+        } else if (fallbackImages.length > 0) {
+            // No ffmpeg, use fallback image
+            poster = fallbackImages[i % fallbackImages.length];
+            console.log(`  ℹ️  Using fallback image: ${poster}`);
+        }
+        
+        // Create video configuration
+        const config = {
+            title: title,
+            description: description,
+            poster: poster,
+            src: `./videos/${videoFile}`
+        };
+        
+        videoConfigs.push(config);
+        console.log(`  ✅ Configured: ${title}\n`);
+    }
+    
+    // Update main.js
+    console.log('📝 Updating main.js...');
+    await updateMainJS(videoConfigs);
+    
+    console.log('\n✨ Video configuration updated successfully!');
+    console.log(`   ${videoConfigs.length} video(s) configured`);
+    
+    // Show the configuration
+    console.log('\n📋 Video Configuration:');
+    console.log('------------------------');
+    videoConfigs.forEach((video, index) => {
+        console.log(`${index + 1}. ${video.title}`);
+        console.log(`   📁 ${video.src}`);
+        console.log(`   🖼️  ${video.poster}`);
+    });
+}
+
+// Run the script
+main().catch(error => {
+    console.error('❌ Script failed:', error);
+    process.exit(1);
+});
