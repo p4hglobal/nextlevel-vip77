@@ -94,7 +94,11 @@ document.addEventListener('DOMContentLoaded', function() {
         wrapper.innerHTML = '';
         wrapper.style.position = 'relative';
         wrapper.style.width = '100%';
-        wrapper.style.height = '450px';
+        wrapper.style.height = '600px';  // Increased for portrait videos
+        wrapper.style.background = '#000';
+        wrapper.style.display = 'flex';
+        wrapper.style.alignItems = 'center';
+        wrapper.style.justifyContent = 'center';
         
         // Create video elements
         videos.forEach((video, index) => {
@@ -112,8 +116,10 @@ document.addEventListener('DOMContentLoaded', function() {
             videoElement.controls = true;
             videoElement.style.width = '100%';
             videoElement.style.height = '100%';
-            videoElement.style.objectFit = 'contain';
+            videoElement.style.objectFit = 'contain';  // Ensures video fits without cropping
             videoElement.style.background = '#000';
+            videoElement.style.maxWidth = '100%';
+            videoElement.style.maxHeight = '100%';
             
             // Add error handling
             videoElement.onerror = function() {
