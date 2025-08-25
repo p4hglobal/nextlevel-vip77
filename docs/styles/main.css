@@ -130,6 +130,17 @@ body {
     text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
 }
 
+.campaign-subtitle a {
+    color: #dc2626;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.campaign-subtitle a:hover {
+    color: #ff4444;
+    text-decoration: underline;
+}
+
 /* Hero Section */
 .hero-section {
     padding: 4rem 0;
@@ -427,7 +438,7 @@ body {
 .mission-content {
     max-width: 800px;
     margin: 0 auto;
-    text-align: center;
+    text-align: left;  /* Changed to left align */
     background: rgba(0, 0, 0, 0.75);
     backdrop-filter: blur(10px);
     border-radius: 20px;
@@ -436,11 +447,22 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.mission-content .section-title {
+    text-align: center;  /* Keep title centered */
+    margin-bottom: 2rem;
+}
+
 .mission-text {
     font-size: 1.2rem;
     line-height: 1.8;
     color: #ffffff;  /* Brighter text color */
     text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    text-align: left;  /* Explicitly left align text */
+}
+
+.mission-text li {
+    margin-left: 1.5rem;
+    margin-bottom: 0.5rem;
 }
 
 /* Footer */
