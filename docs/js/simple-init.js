@@ -97,6 +97,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             "description": "VIP 77 Student testimonial supporting P4H Global's educational mission in Haiti.",
                             "poster": "./images/Liam Helmer_thumb.jpg",
                             "src": "./videos/Liam Helmer.mp4"
+                  },
+                  {
+                            "title": "Randy Strunk",
+                            "description": "Randy Strunk - Part of the True North VIP 77 campaign for P4H Global.",
+                            "poster": "./images/Randy Strunk_thumb.jpg",
+                            "src": "./videos/Randy Strunk.mp4"
                   }
 ];
         
