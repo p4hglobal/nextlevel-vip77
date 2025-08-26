@@ -81,6 +81,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const videos = [
                   {
+                            "title": "Callie Westlake",
+                            "description": "Callie Westlake - Part of the True North VIP 77 campaign for P4H Global.",
+                            "poster": "./images/Callie Westlake_thumb.jpg",
+                            "src": "./videos/Callie Westlake.mp4"
+                  },
+                  {
                             "title": "Katie Dumaine",
                             "description": "VIP 77 Student sharing their commitment to transforming education in Haiti.",
                             "poster": "./images/Katie Dumaine_thumb.jpg",
@@ -95,6 +101,10 @@ document.addEventListener('DOMContentLoaded', function() {
 ];
         
         let currentVideo = 0;
+        let autoRotateInterval = null;
+        let pauseTimeout = null;
+        const AUTO_ROTATE_DELAY = 15000; // 15 seconds
+        const PAUSE_DURATION = 300000; // 5 minutes
         
         // Clear wrapper
         wrapper.innerHTML = '';
@@ -180,6 +190,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Create indicators
         if (indicators) {
             indicators.innerHTML = '';
+            
+            // Create indicator dots
             videos.forEach((_, index) => {
                 const dot = document.createElement('span');
                 dot.className = 'indicator';
@@ -193,6 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 dot.style.cursor = 'pointer';
                 dot.onclick = function() {
                     showVideo(index);
+                    pauseAutoRotate();
                 };
                 indicators.appendChild(dot);
             });
@@ -203,7 +216,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const slides = wrapper.querySelectorAll('.video-slide');
             const dots = indicators ? indicators.querySelectorAll('.indicator') : [];
             
+            // Pause any playing videos
             slides.forEach((slide, i) => {
+                const video = slide.querySelector('video');
+                if (video && i !== index) {
+                    video.pause();
+                }
                 slide.style.display = i === index ? 'block' : 'none';
             });
             
@@ -214,15 +232,53 @@ document.addEventListener('DOMContentLoaded', function() {
             currentVideo = index;
         }
         
-        // Bind navigation buttons
+        // Auto-rotation functions
+        function startAutoRotate() {
+            // Clear any existing interval
+            if (autoRotateInterval) {
+                clearInterval(autoRotateInterval);
+            }
+            
+            autoRotateInterval = setInterval(function() {
+                const nextIndex = (currentVideo + 1) % videos.length;
+                showVideo(nextIndex);
+                console.log('Auto-rotated to video', nextIndex + 1);
+            }, AUTO_ROTATE_DELAY);
+            
+            console.log('Auto-rotation started (15 seconds)');
+        }
+        
+        function pauseAutoRotate() {
+            // Clear the rotation interval
+            if (autoRotateInterval) {
+                clearInterval(autoRotateInterval);
+                autoRotateInterval = null;
+                console.log('Auto-rotation paused for 5 minutes');
+            }
+            
+            // Clear any existing pause timeout
+            if (pauseTimeout) {
+                clearTimeout(pauseTimeout);
+            }
+            
+            // Set timeout to resume after 5 minutes
+            pauseTimeout = setTimeout(function() {
+                startAutoRotate();
+                console.log('Auto-rotation resumed after 5 minute pause');
+            }, PAUSE_DURATION);
+        }
+        
+        // Bind navigation buttons with pause functionality
         prevBtn.onclick = function() {
             const newIndex = currentVideo === 0 ? videos.length - 1 : currentVideo - 1;
             showVideo(newIndex);
+            pauseAutoRotate();
         };
         
         nextBtn.onclick = function() {
             const newIndex = (currentVideo + 1) % videos.length;
             showVideo(newIndex);
+            pauseAutoRotate();
         };
         
         // Hide navigation if only one video
@@ -230,7 +286,19 @@ document.addEventListener('DOMContentLoaded', function() {
             prevBtn.style.display = 'none';
             nextBtn.style.display = 'none';
             if (indicators) indicators.style.display = 'none';
+        } else {
+            // Start auto-rotation only if there are multiple videos
+            startAutoRotate();
         }
+        
+        // Add event listeners to pause auto-rotation when user plays a video
+        const allVideos = wrapper.querySelectorAll('video');
+        allVideos.forEach(video => {
+            video.addEventListener('play', function() {
+                pauseAutoRotate();
+                console.log('Auto-rotation paused - user started playing video');
+            });
+        });
         
         console.log('Video carousel initialized with', videos.length, 'videos');
     }
