@@ -87,6 +87,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             "src": "./videos/Callie Westlake.mp4"
                   },
                   {
+                            "title": "Debbie Lingscheit",
+                            "description": "Debbie Lingscheit - Part of the True North VIP 77 campaign for P4H Global.",
+                            "poster": "./images/Debbie Lingscheit_thumb.jpg",
+                            "src": "./videos/Debbie Lingscheit.mp4"
+                  },
+                  {
                             "title": "Katie Dumaine",
                             "description": "VIP 77 Student sharing their commitment to transforming education in Haiti.",
                             "poster": "./images/Katie Dumaine_thumb.jpg",
