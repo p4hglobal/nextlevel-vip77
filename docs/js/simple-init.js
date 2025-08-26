@@ -80,13 +80,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         const videos = [
-            {
-                title: "Liam Helmer",
-                description: "VIP 77 Student testimonial supporting P4H Global's educational mission in Haiti.",
-                poster: "./images/bg1.jpg",
-                src: "./videos/Liam Helmer.mp4"
-            }
-        ];
+                  {
+                            "title": "Katie Dumaine",
+                            "description": "VIP 77 Student sharing their commitment to transforming education in Haiti.",
+                            "poster": "./images/Katie Dumaine_thumb.jpg",
+                            "src": "./videos/Katie Dumaine.mp4"
+                  },
+                  {
+                            "title": "Liam Helmer",
+                            "description": "VIP 77 Student testimonial supporting P4H Global's educational mission in Haiti.",
+                            "poster": "./images/Liam Helmer_thumb.jpg",
+                            "src": "./videos/Liam Helmer.mp4"
+                  }
+];
         
         let currentVideo = 0;
         

@@ -156,7 +156,7 @@ class TrueNorthApp {
         this.config.videos = [
                   {
                             "title": "Katie Dumaine",
-                            "description": "Katie Dumaine - Part of the True North VIP 77 campaign for P4H Global.",
+                            "description": "VIP 77 Student sharing their commitment to transforming education in Haiti.",
                             "poster": "./images/Katie Dumaine_thumb.jpg",
                             "src": "./videos/Katie Dumaine.mp4"
                   },

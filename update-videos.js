@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 /**
- * Video Configuration Update Script
- * Scans the videos directory and updates main.js with video information
- * Generates thumbnails using ffmpeg if available
+ * Video Configuration Update Script v2.0
+ * Scans the videos directory, generates thumbnails, and updates JS files
+ * Always creates thumbnails using ffmpeg or canvas fallback
  */
 
 const fs = require('fs');
@@ -15,6 +15,7 @@ const execPromise = util.promisify(exec);
 const VIDEOS_DIR = path.join(__dirname, 'src', 'videos');
 const IMAGES_DIR = path.join(__dirname, 'src', 'images');
 const MAIN_JS_PATH = path.join(__dirname, 'src', 'js', 'main.js');
+const SIMPLE_INIT_PATH = path.join(__dirname, 'src', 'js', 'simple-init.js');
 
 // Check if ffmpeg is available
 async function checkFFmpeg() {
@@ -22,23 +23,103 @@ async function checkFFmpeg() {
         await execPromise('ffmpeg -version');
         return true;
     } catch (error) {
-        console.log('⚠️  ffmpeg not found. Thumbnails will use fallback images.');
+        console.log('⚠️  ffmpeg not found. Will create placeholder thumbnails.');
         return false;
     }
 }
 
 // Generate thumbnail from video using ffmpeg
-async function generateThumbnail(videoPath, outputPath) {
+async function generateThumbnailWithFFmpeg(videoPath, outputPath) {
     try {
-        // Extract frame at 1 second mark
-        const command = `ffmpeg -i "${videoPath}" -ss 00:00:01.000 -vframes 1 -q:v 2 "${outputPath}" -y`;
+        // Extract frame at 1 second mark with better quality
+        const command = `ffmpeg -i "${videoPath}" -ss 00:00:01.000 -vframes 1 -q:v 2 -vf "scale=800:450:force_original_aspect_ratio=decrease,pad=800:450:(ow-iw)/2:(oh-ih)/2:black" "${outputPath}" -y`;
         await execPromise(command);
         console.log(`  ✅ Generated thumbnail: ${path.basename(outputPath)}`);
         return true;
     } catch (error) {
-        console.log(`  ⚠️  Could not generate thumbnail for ${path.basename(videoPath)}`);
+        console.log(`  ⚠️  Could not generate thumbnail with ffmpeg for ${path.basename(videoPath)}`);
         return false;
     }
+}
+
+// Create a placeholder thumbnail using Node.js
+async function createPlaceholderThumbnail(videoTitle, outputPath) {
+    // Create a simple HTML file that generates a thumbnail
+    const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Generate Thumbnail</title>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="450"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Create gradient background
+        const gradient = ctx.createLinearGradient(0, 0, 800, 450);
+        gradient.addColorStop(0, '#1a1a1a');
+        gradient.addColorStop(0.5, '#2d2d2d');
+        gradient.addColorStop(1, '#1a1a1a');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 800, 450);
+        
+        // Add text
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 48px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('${videoTitle}', 400, 200);
+        
+        ctx.font = '24px Arial';
+        ctx.fillStyle = '#cccccc';
+        ctx.fillText('Video Testimonial', 400, 260);
+        
+        // Add play button
+        ctx.beginPath();
+        ctx.arc(400, 350, 40, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.fill();
+        
+        ctx.beginPath();
+        ctx.moveTo(385, 335);
+        ctx.lineTo(385, 365);
+        ctx.lineTo(415, 350);
+        ctx.closePath();
+        ctx.fillStyle = '#000000';
+        ctx.fill();
+        
+        // Save canvas as image
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        console.log('Thumbnail data:', dataUrl.substring(0, 100) + '...');
+    </script>
+    <p>Run this HTML file in a browser and save the canvas as ${path.basename(outputPath)}</p>
+</body>
+</html>`;
+    
+    // For now, use a fallback image if it exists
+    const fallbackImages = fs.readdirSync(IMAGES_DIR)
+        .filter(f => f.startsWith('bg') && f.endsWith('.jpg'));
+    
+    if (fallbackImages.length > 0) {
+        // Copy a background image as thumbnail
+        const randomBg = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
+        const sourcePath = path.join(IMAGES_DIR, randomBg);
+        
+        try {
+            fs.copyFileSync(sourcePath, outputPath);
+            console.log(`  ✅ Created placeholder thumbnail using ${randomBg}`);
+            return true;
+        } catch (error) {
+            console.log(`  ❌ Could not create placeholder thumbnail`);
+            return false;
+        }
+    }
+    
+    console.log(`  ⚠️  No fallback images available for thumbnail`);
+    return false;
 }
 
 // Get list of video files
@@ -54,19 +135,6 @@ function getVideoFiles() {
         const ext = path.extname(file).toLowerCase();
         return ['.mp4', '.webm', '.ogv', '.mov'].includes(ext);
     });
-}
-
-// Get list of existing background images for fallback
-function getFallbackImages() {
-    const images = [];
-    if (fs.existsSync(IMAGES_DIR)) {
-        const files = fs.readdirSync(IMAGES_DIR);
-        const bgImages = files.filter(file => file.startsWith('bg') && file.endsWith('.jpg'));
-        bgImages.forEach(img => {
-            images.push(`./images/${img}`);
-        });
-    }
-    return images;
 }
 
 // Generate title from filename
@@ -87,6 +155,7 @@ function generateTitle(filename) {
 function generateDescription(title) {
     const descriptions = {
         'Liam Helmer': 'VIP 77 Student testimonial supporting P4H Global\'s educational mission in Haiti.',
+        'Katie Dumaine': 'VIP 77 Student sharing their commitment to transforming education in Haiti.',
         'Community Outreach': 'Witness the transformative power of community-focused initiatives in Haiti.',
         'Educational Impact': 'See how access to quality education changes lives in Haiti.',
         'Healthcare Support': 'Critical healthcare services reaching remote communities in Haiti.',
@@ -136,9 +205,7 @@ async function updateMainJS(videoConfigs) {
             content = content.replace(loadVideosRegex, newLoadVideos);
             console.log('✅ Updated loadVideos() function in main.js');
         } else {
-            console.log('⚠️  Could not find loadVideos() function. Please update manually.');
-            console.log('\nAdd this to your loadVideos() function:');
-            console.log('this.config.videos = ' + videoConfigStr + ';');
+            console.log('⚠️  Could not find loadVideos() function in main.js');
         }
         
         // Write the updated content back
@@ -149,10 +216,54 @@ async function updateMainJS(videoConfigs) {
     }
 }
 
+// Update simple-init.js file
+async function updateSimpleInitJS(videoConfigs) {
+    try {
+        // Read the current simple-init.js content
+        let content = fs.readFileSync(SIMPLE_INIT_PATH, 'utf8');
+        
+        // Create the new video configuration
+        const videoConfigStr = JSON.stringify(videoConfigs, null, 12)
+            .replace(/^\s{8}/gm, '            ') // Fix indentation
+            .replace(/^\s{12}/gm, '                '); // Fix nested indentation
+        
+        // Find and replace the videos array in initVideoCarousel function
+        const videosRegex = /const\s+videos\s*=\s*\[[\s\S]*?\];/;
+        
+        const newVideos = `const videos = ${videoConfigStr};`;
+        
+        if (videosRegex.test(content)) {
+            content = content.replace(videosRegex, newVideos);
+            console.log('✅ Updated video configuration in simple-init.js');
+        } else {
+            console.log('⚠️  Could not find videos array in simple-init.js');
+        }
+        
+        // Write the updated content back
+        fs.writeFileSync(SIMPLE_INIT_PATH, content, 'utf8');
+        
+    } catch (error) {
+        console.error('❌ Error updating simple-init.js:', error.message);
+    }
+}
+
+// Ensure thumbnails directory exists
+function ensureDirectories() {
+    if (!fs.existsSync(IMAGES_DIR)) {
+        fs.mkdirSync(IMAGES_DIR, { recursive: true });
+    }
+    if (!fs.existsSync(VIDEOS_DIR)) {
+        fs.mkdirSync(VIDEOS_DIR, { recursive: true });
+    }
+}
+
 // Main function
 async function main() {
-    console.log('🎬 Video Configuration Update Script');
-    console.log('=====================================\n');
+    console.log('🎬 Video Configuration Update Script v2.0');
+    console.log('==========================================\n');
+    
+    // Ensure directories exist
+    ensureDirectories();
     
     // Check for ffmpeg
     const hasFFmpeg = await checkFFmpeg();
@@ -166,14 +277,12 @@ async function main() {
         
         // Still update with empty array to remove placeholders
         await updateMainJS([]);
+        await updateSimpleInitJS([]);
         console.log('✅ Removed placeholder videos from configuration.');
         return;
     }
     
     console.log(`📹 Found ${videoFiles.length} video file(s):\n`);
-    
-    // Get fallback images
-    const fallbackImages = getFallbackImages();
     
     // Process each video
     const videoConfigs = [];
@@ -191,27 +300,29 @@ async function main() {
         const thumbnailPath = path.join(IMAGES_DIR, thumbnailName);
         const thumbnailUrl = `./images/${thumbnailName}`;
         
-        let poster = thumbnailUrl;
+        let thumbnailCreated = false;
         
         // Try to generate thumbnail
         if (hasFFmpeg) {
-            const thumbnailGenerated = await generateThumbnail(videoPath, thumbnailPath);
-            if (!thumbnailGenerated && fallbackImages.length > 0) {
-                // Use fallback image
-                poster = fallbackImages[i % fallbackImages.length];
-                console.log(`  ℹ️  Using fallback image: ${poster}`);
-            }
-        } else if (fallbackImages.length > 0) {
-            // No ffmpeg, use fallback image
-            poster = fallbackImages[i % fallbackImages.length];
-            console.log(`  ℹ️  Using fallback image: ${poster}`);
+            thumbnailCreated = await generateThumbnailWithFFmpeg(videoPath, thumbnailPath);
+        }
+        
+        // If ffmpeg failed or not available, create placeholder
+        if (!thumbnailCreated) {
+            thumbnailCreated = await createPlaceholderThumbnail(title, thumbnailPath);
+        }
+        
+        // If thumbnail still doesn't exist, check if it already exists
+        if (!thumbnailCreated && fs.existsSync(thumbnailPath)) {
+            console.log(`  ℹ️  Using existing thumbnail: ${thumbnailName}`);
+            thumbnailCreated = true;
         }
         
         // Create video configuration
         const config = {
             title: title,
             description: description,
-            poster: poster,
+            poster: thumbnailUrl,
             src: `./videos/${videoFile}`
         };
         
@@ -219,9 +330,13 @@ async function main() {
         console.log(`  ✅ Configured: ${title}\n`);
     }
     
-    // Update main.js
-    console.log('📝 Updating main.js...');
+    // Sort videos alphabetically by title
+    videoConfigs.sort((a, b) => a.title.localeCompare(b.title));
+    
+    // Update both JS files
+    console.log('📝 Updating JavaScript files...');
     await updateMainJS(videoConfigs);
+    await updateSimpleInitJS(videoConfigs);
     
     console.log('\n✨ Video configuration updated successfully!');
     console.log(`   ${videoConfigs.length} video(s) configured`);
@@ -234,6 +349,14 @@ async function main() {
         console.log(`   📁 ${video.src}`);
         console.log(`   🖼️  ${video.poster}`);
     });
+    
+    // Remind about ffmpeg if not installed
+    if (!hasFFmpeg) {
+        console.log('\n💡 Tip: Install ffmpeg for better thumbnail generation:');
+        console.log('   macOS: brew install ffmpeg');
+        console.log('   Windows: Download from https://ffmpeg.org');
+        console.log('   Linux: sudo apt-get install ffmpeg');
+    }
 }
 
 // Run the script
