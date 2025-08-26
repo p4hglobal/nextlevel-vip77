@@ -115,36 +115,65 @@ document.addEventListener('DOMContentLoaded', function() {
             slide.style.height = '100%';
             slide.style.display = index === 0 ? 'block' : 'none';
             
-            // Check if video file exists
+            // Create container for video and title
+            const videoContainer = document.createElement('div');
+            videoContainer.style.width = '100%';
+            videoContainer.style.height = '100%';
+            videoContainer.style.display = 'flex';
+            videoContainer.style.flexDirection = 'column';
+            
+            // Create video element
             const videoElement = document.createElement('video');
             videoElement.src = video.src;
             videoElement.poster = video.poster;
             videoElement.controls = true;
             videoElement.style.width = '100%';
-            videoElement.style.height = '100%';
+            videoElement.style.flex = '1';
             videoElement.style.objectFit = 'contain';  // Ensures video fits without cropping
             videoElement.style.background = '#000';
             videoElement.style.maxWidth = '100%';
-            videoElement.style.maxHeight = '100%';
+            videoElement.style.maxHeight = 'calc(100% - 60px)'; // Leave space for title
+            
+            // Create title element
+            const titleElement = document.createElement('div');
+            titleElement.className = 'video-title-display';
+            titleElement.style.height = '60px';
+            titleElement.style.padding = '15px';
+            titleElement.style.background = 'rgba(0, 0, 0, 0.9)';
+            titleElement.style.color = '#ffffff';
+            titleElement.style.fontSize = '1.3rem';
+            titleElement.style.fontWeight = '600';
+            titleElement.style.textAlign = 'center';
+            titleElement.style.display = 'flex';
+            titleElement.style.alignItems = 'center';
+            titleElement.style.justifyContent = 'center';
+            titleElement.style.borderTop = '1px solid rgba(255, 255, 255, 0.1)';
+            titleElement.textContent = video.title;
             
             // Add error handling
             videoElement.onerror = function() {
                 console.log('Video not found, showing poster');
                 slide.innerHTML = `
-                    <div style="width: 100%; height: 100%; background: url('${video.poster}') center/cover; position: relative;">
-                        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(transparent, rgba(0,0,0,0.9));">
-                            <h3 style="color: white; margin: 0 0 10px 0;">${video.title}</h3>
-                            <p style="color: white; margin: 0; opacity: 0.9; font-size: 14px;">${video.description}</p>
+                    <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+                        <div style="flex: 1; background: url('${video.poster}') center/cover; position: relative;">
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                                        width: 80px; height: 80px; background: rgba(255,255,255,0.9); 
+                                        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+                                        font-size: 36px; cursor: pointer;">▶</div>
                         </div>
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-                                    width: 80px; height: 80px; background: rgba(255,255,255,0.9); 
-                                    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-                                    font-size: 36px; cursor: pointer;">▶</div>
+                        <div style="height: 60px; padding: 15px; background: rgba(0, 0, 0, 0.9);
+                                    color: white; font-size: 1.3rem; font-weight: 600; text-align: center;
+                                    display: flex; align-items: center; justify-content: center;
+                                    border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                            ${video.title}
+                        </div>
                     </div>
                 `;
             };
             
-            slide.appendChild(videoElement);
+            videoContainer.appendChild(videoElement);
+            videoContainer.appendChild(titleElement);
+            slide.appendChild(videoContainer);
             wrapper.appendChild(slide);
         });
         
