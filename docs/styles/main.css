@@ -535,7 +535,7 @@ body {
     .video-container {
         width: 100%;
         max-width: 600px;
-        height: 300px;
+        height: 550px;  /* Increased for portrait videos on tablet/mobile */
     }
     
     .carousel-btn {
@@ -576,7 +576,8 @@ body {
     }
     
     .video-container {
-        height: 400px;  /* Smaller on mobile but still portrait-friendly */
+        height: 500px;  /* Better height for portrait videos on mobile */
+        max-width: 100%;
     }
     
     .carousel-btn {
@@ -617,7 +618,8 @@ body {
     }
     
     .video-container {
-        height: 250px;
+        height: 450px;  /* Adequate height for portrait videos on small screens */
+        max-width: 95vw;
     }
     
     .carousel-btn {

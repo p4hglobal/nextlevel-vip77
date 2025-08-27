@@ -54,7 +54,10 @@ class VideoCarousel {
         this.videoWrapper.innerHTML = '';
         this.videoWrapper.style.position = 'relative';
         this.videoWrapper.style.width = '100%';
-        this.videoWrapper.style.height = '450px';
+        // Responsive height based on screen size
+        const isMobile = window.innerWidth <= 768;
+        const isSmallMobile = window.innerWidth <= 480;
+        this.videoWrapper.style.height = isSmallMobile ? '450px' : isMobile ? '550px' : '600px';
         
         this.videosData.forEach((video, index) => {
             const slide = document.createElement('div');
