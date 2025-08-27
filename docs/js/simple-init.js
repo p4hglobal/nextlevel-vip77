@@ -105,10 +105,22 @@ document.addEventListener('DOMContentLoaded', function() {
                             "src": "./videos/Liam Helmer.mp4"
                   },
                   {
+                            "title": "Quavion Porter",
+                            "description": "Quavion Porter - Part of the True North VIP 77 campaign for P4H Global.",
+                            "poster": "./images/Quavion Porter_thumb.jpg",
+                            "src": "./videos/Quavion Porter.mp4"
+                  },
+                  {
                             "title": "Randy Strunk",
                             "description": "Randy Strunk - Part of the True North VIP 77 campaign for P4H Global.",
                             "poster": "./images/Randy Strunk_thumb.jpg",
                             "src": "./videos/Randy Strunk.mp4"
+                  },
+                  {
+                            "title": "Stephen Fowler",
+                            "description": "Stephen Fowler - Part of the True North VIP 77 campaign for P4H Global.",
+                            "poster": "./images/Stephen Fowler_thumb.jpg",
+                            "src": "./videos/Stephen Fowler.mp4"
                   }
 ];
         
