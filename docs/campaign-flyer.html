@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>True North VIP 77 - Campaign Flyer</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            width: 8.5in;
+            height: 11in;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #333;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .flyer-container {
+            width: 100%;
+            height: 100%;
+            padding: 0.5in;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            position: relative;
+        }
+        
+        /* Header Section */
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .header h1 {
+            color: #fff;
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .header .tagline {
+            color: #dc2626;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .header .subtitle {
+            color: #e0e0e0;
+            font-size: 18px;
+        }
+        
+        /* Mission Section */
+        .mission-section {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border-left: 5px solid #dc2626;
+        }
+        
+        .mission-section h2 {
+            color: #1a1a1a;
+            font-size: 28px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .mission-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #333;
+            text-align: justify;
+            margin-bottom: 15px;
+        }
+        
+        .goal-highlight {
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(220, 38, 38, 0.3);
+        }
+        
+        .goal-highlight .amount {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .goal-highlight .impact {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        /* Impact Points */
+        .impact-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+        
+        .impact-list li {
+            position: relative;
+            padding-left: 35px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+        }
+        
+        .impact-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #4CAF50;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        /* QR Code Section */
+        .qr-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            margin-top: auto;
+        }
+        
+        .qr-content {
+            flex: 1;
+            padding-right: 30px;
+        }
+        
+        .qr-content h3 {
+            color: #1a1a1a;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .website-url {
+            color: #dc2626;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+        
+        .qr-code-container {
+            width: 180px;
+            height: 180px;
+            padding: 10px;
+            background: white;
+            border: 3px solid #dc2626;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .qr-code-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        /* Call to Action */
+        .cta-text {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        
+        /* Print Optimization */
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .flyer-container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="flyer-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>True North - VIP 77</h1>
+            <div class="tagline">Transforming Communities Through Compassionate Action</div>
+            <div class="subtitle">Supporting P4H Global's Mission in Haiti</div>
+        </div>
+        
+        <!-- Mission Section -->
+        <div class="mission-section">
+            <h2>Join Our Mission</h2>
+            <p class="mission-text">
+                We are a community of leaders committed to growth, change, and building a brighter future for the next generation. 
+                By investing in people, we transform not only individual lives but the future of entire nations.
+            </p>
+            
+            <div class="goal-highlight">
+                <div class="amount">$28,800 GOAL</div>
+                <div class="impact">
+                    Fund 4 dedicated trainers in Haiti<br>
+                    Train 800 teachers • Reach 28,000 students annually
+                </div>
+            </div>
+            
+            <ul class="impact-list">
+                <li>Invest in the future of one of the most resilient nations on earth</li>
+                <li>Empower teachers with the tools they need to transform classrooms</li>
+                <li>Give children hope and the opportunity to thrive, dream, and contribute to Haiti's brighter tomorrow</li>
+            </ul>
+            
+            <p class="mission-text" style="font-weight: 600; text-align: center; margin-top: 20px;">
+                Together, we can stand as leaders for growth, partners for change, 
+                and champions of hope for Haiti's future.
+            </p>
+        </div>
+        
+        <!-- QR Code and Website Section -->
+        <div class="qr-section">
+            <div class="qr-content">
+                <h3>Learn More & Donate</h3>
+                <div class="website-url">https://p4hglobal.github.io/nextlevel-vip77</div>
+                <p class="cta-text">
+                    Scan the QR code or visit our website to watch inspiring video messages from our team, 
+                    learn more about our impact, and make your donation today.
+                </p>
+                <p class="cta-text" style="margin-top: 10px; font-weight: bold;">
+                    Every contribution makes a meaningful difference in building stronger, more resilient communities.
+                </p>
+            </div>
+            <div class="qr-code-container">
+                <img src="qrcode.png" alt="QR Code - Visit Campaign Website">
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>
